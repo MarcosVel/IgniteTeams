@@ -1,3 +1,4 @@
+import EmptyList from "@components/EmptyList";
 import GroupCard from "@components/GroupCard";
 import Header from "@components/Header";
 import Highlight from "@components/Highlight";
@@ -6,6 +7,7 @@ import { FlatList } from "react-native";
 import { Container } from "./styles";
 
 export default function Groups() {
+  // const [groups, setGroups] = useState<string[]>([]);
   const [groups, setGroups] = useState<string[]>([
     "Galera da Rocket",
     "Amigos",
@@ -24,9 +26,12 @@ export default function Groups() {
         data={groups}
         keyExtractor={item => item}
         renderItem={({ item }) => <GroupCard title={item} />}
-        contentContainerStyle={{
-          paddingBottom: 32,
-        }}
+        contentContainerStyle={
+          groups.length === 0 ? { flex: 1 } : { paddingBottom: 32 }
+        }
+        ListEmptyComponent={() => (
+          <EmptyList message="Nenhuma turma cadastrada" />
+        )}
       />
     </Container>
   );
