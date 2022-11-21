@@ -1,3 +1,4 @@
+import Button from "@components/Button";
 import EmptyList from "@components/EmptyList";
 import GroupCard from "@components/GroupCard";
 import Header from "@components/Header";
@@ -7,7 +8,6 @@ import { FlatList } from "react-native";
 import { Container } from "./styles";
 
 export default function Groups() {
-  // const [groups, setGroups] = useState<string[]>([]);
   const [groups, setGroups] = useState<string[]>([
     "Galera da Rocket",
     "Amigos",
@@ -23,9 +23,11 @@ export default function Groups() {
       <Highlight title="Turmas" subtitle="Jogue com a sua turma" />
 
       <FlatList
+        style={{ flex: 1 }}
         data={groups}
         keyExtractor={item => item}
         renderItem={({ item }) => <GroupCard title={item} />}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={
           groups.length === 0 ? { flex: 1 } : { paddingBottom: 32 }
         }
@@ -33,6 +35,8 @@ export default function Groups() {
           <EmptyList message="Nenhuma turma cadastrada" />
         )}
       />
+
+      <Button title="Criar nova turma" />
     </Container>
   );
 }
