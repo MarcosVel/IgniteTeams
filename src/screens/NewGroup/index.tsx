@@ -1,7 +1,9 @@
 import Button from "@components/Button";
 import Header from "@components/Header";
 import Highlight from "@components/Highlight";
+import Input from "@components/Input";
 import React from "react";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Container, Content, Icon } from "./styles";
 
 export default function NewGroup() {
@@ -9,16 +11,20 @@ export default function NewGroup() {
     <Container>
       <Header showBackButton />
 
-      <Content>
-        <Icon />
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <Content>
+          <Icon />
 
-        <Highlight
-          title="Nova turma"
-          subtitle="Crie a turma para adicionar as pessoas"
-        />
+          <Highlight
+            title="Nova turma"
+            subtitle="Crie a turma para adicionar as pessoas"
+          />
 
-        <Button title="Criar" />
-      </Content>
+          <Input />
+
+          <Button title="Criar" />
+        </Content>
+      </TouchableWithoutFeedback>
     </Container>
   );
 }
