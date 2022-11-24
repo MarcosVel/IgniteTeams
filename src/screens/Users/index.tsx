@@ -14,7 +14,7 @@ export default function Users() {
         subtitle="Adicione a galera e separe os times"
       />
 
-      <ButtonIcon />
+      <ButtonIcon icon="home" />
     </Container>
   );
 }
