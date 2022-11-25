@@ -22,7 +22,7 @@ export default function NewGroup() {
 
           <Input placeholder="Nome da turma" />
 
-          <Button title="Criar" />
+          <Button title="Criar" style={{ marginTop: 20 }} />
         </Content>
       </TouchableWithoutFeedback>
     </Container>
