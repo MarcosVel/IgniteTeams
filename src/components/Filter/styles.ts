@@ -15,7 +15,7 @@ export const Container = styled(TouchableOpacity)<FilterStyleProps>`
   border-radius: 4px;
   margin-right: 12px;
   height: 38px;
-  width: 70px;
+  padding: 8px 12px;
   align-items: center;
   justify-content: center;
 `;
@@ -28,4 +28,6 @@ export const Title = styled.Text`
   `}
 
   text-transform: uppercase;
+  max-width: 140px;
+  flex-shrink: 1;
 `;

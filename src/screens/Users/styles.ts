@@ -1,4 +1,5 @@
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export const Container = styled.View`
   flex: 1;
@@ -12,4 +13,26 @@ export const Form = styled.View`
   flex-direction: row;
   align-items: center;
   border-radius: 8px;
+`;
+
+export const HeaderList = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  margin: 32px 0 28px;
+`;
+
+export const Gradient = styled(LinearGradient)`
+  padding-left: 40px;
+  align-items: flex-end;
+  position: absolute;
+  right: 0;
+`;
+
+export const TeamsQuantity = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.BOLD};
+    font-size: ${theme.FONT_SIZE.SM}px;
+    color: ${theme.COLORS.GRAY_200};
+  `}
 `;
