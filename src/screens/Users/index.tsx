@@ -3,6 +3,7 @@ import Filter from "@components/Filter";
 import Header from "@components/Header";
 import Highlight from "@components/Highlight";
 import Input from "@components/Input";
+import UserCard from "@components/UserCard";
 import React, { useState } from "react";
 import { FlatList, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Container, Form, Gradient, HeaderList, TeamsQuantity } from "./styles";
@@ -55,6 +56,13 @@ export default function Users() {
             <TeamsQuantity>{teamList.length}</TeamsQuantity>
           </Gradient>
         </HeaderList>
+
+        <FlatList
+          data={teamList}
+          keyExtractor={item => item}
+          renderItem={({ item }) => <UserCard name={item} />}
+          showsVerticalScrollIndicator={false}
+        />
       </Container>
     </TouchableWithoutFeedback>
   );
