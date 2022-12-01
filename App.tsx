@@ -4,9 +4,9 @@ import {
   Roboto_700Bold,
   useFonts,
 } from "@expo-google-fonts/roboto";
-import Users from "@screens/Users";
 import { StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components/native";
+import { Routes } from "./src/routes";
 import theme from "./src/theme";
 
 export default function App() {
@@ -19,7 +19,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <Users /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </ThemeProvider>
   );
 }
