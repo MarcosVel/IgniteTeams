@@ -6,9 +6,14 @@ import Header from "@components/Header";
 import Highlight from "@components/Highlight";
 import Input from "@components/Input";
 import UserCard from "@components/UserCard";
+import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { TouchableWithoutFeedback, FlatList, Keyboard } from "react-native";
 import { Container, Form, Gradient, HeaderList, TeamsQuantity } from "./styles";
+
+type RouteParams = {
+  group: string;
+};
 
 export default function Users() {
   const [users, setUsers] = useState([
@@ -23,13 +28,16 @@ export default function Users() {
   ]);
   const [team, setTeam] = useState("Turma React Native");
 
+  const route = useRoute();
+  const { group } = route.params as RouteParams;
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Container>
         <Header showBackButton />
 
         <Highlight
-          title={team}
+          title={group}
           subtitle="Adicione a galera e separe os times"
         />
 
