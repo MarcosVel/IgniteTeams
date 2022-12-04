@@ -3,6 +3,7 @@ import Header from "@components/Header";
 import Highlight from "@components/Highlight";
 import Input from "@components/Input";
 import { useNavigation } from "@react-navigation/native";
+import { groupCreate } from "@storage/group/groupCreate";
 import React, { useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Container, Content, Icon } from "./styles";
@@ -11,8 +12,13 @@ export default function NewGroup() {
   const navigation = useNavigation();
   const [group, setGroup] = useState("");
 
-  const handleNewGroup = () => {
-    navigation.navigate("users", { group: group });
+  const handleNewGroup = async () => {
+    try {
+      await groupCreate(group);
+      navigation.navigate("users", { group: group });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
