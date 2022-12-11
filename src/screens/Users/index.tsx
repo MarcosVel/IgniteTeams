@@ -96,6 +96,8 @@ export default function Users() {
             autoCorrect={false}
             onChangeText={setNewUserName}
             value={newUserName}
+            onSubmitEditing={handleAddUser}
+            returnKeyType="done"
           />
           <ButtonIcon icon="add" onPress={handleAddUser} />
         </Form>
