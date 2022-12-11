@@ -7,8 +7,16 @@ import Highlight from "@components/Highlight";
 import Input from "@components/Input";
 import UserCard from "@components/UserCard";
 import { useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
-import { TouchableWithoutFeedback, FlatList, Keyboard } from "react-native";
+import { userAddByGroup } from "@storage/user/userAddByGroup";
+import { usersGetByGroupAndTeam } from "@storage/user/usersGetByGroupAndTeam";
+import { AppError } from "@utils/AppError";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  FlatList,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Container, Form, Gradient, HeaderList, TeamsQuantity } from "./styles";
 
 type RouteParams = {
@@ -16,20 +24,52 @@ type RouteParams = {
 };
 
 export default function Users() {
-  const [users, setUsers] = useState([
-    "Rodrigo",
-    "Marcos",
-    "Gustavo",
-    "Nicholas",
-    "Otavio",
-    "Daniel",
-    "Lucas",
-    "Paulo",
-  ]);
+  const [users, setUsers] = useState([]);
   const [team, setTeam] = useState("Turma React Native");
+  const [newUserName, setNewUserName] = useState("");
 
   const route = useRoute();
   const { group } = route.params as RouteParams;
+
+  async function handleAddUser() {
+    if (newUserName.trim().length === 0) {
+      return Alert.alert(
+        "Novo usuário",
+        "Informe um nome de usuário para adicionar."
+      );
+    }
+
+    const newUser = {
+      name: newUserName,
+      team,
+    };
+
+    try {
+      await userAddByGroup(newUser, group);
+      fetchUsersByTeam();
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert("Novo usuário", error.message);
+      } else {
+        console.log(error);
+        Alert.alert("Novo usuário", "Não foi possível adicionar.");
+      }
+    }
+  }
+
+  async function fetchUsersByTeam() {
+    try {
+      const usersByTeam = await usersGetByGroupAndTeam(group, team);
+      setUsers(usersByTeam);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Pessoas", "Não foi possível filtrar as pessoas do time.");
+    }
+  }
+
+  useEffect(() => {
+    fetchUsersByTeam();
+  }, [team]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -42,8 +82,12 @@ export default function Users() {
         />
 
         <Form>
-          <Input placeholder="Nome da pessoa" autoCorrect={false} />
-          <ButtonIcon icon="add" />
+          <Input
+            placeholder="Nome da pessoa"
+            autoCorrect={false}
+            onChangeText={setNewUserName}
+          />
+          <ButtonIcon icon="add" onPress={handleAddUser} />
         </Form>
 
         <HeaderList>
@@ -78,9 +122,9 @@ export default function Users() {
 
         <FlatList
           data={users}
-          keyExtractor={item => item}
+          keyExtractor={item => item.name}
           renderItem={({ item }) => (
-            <UserCard name={item} onRemove={() => {}} />
+            <UserCard name={item.name} onRemove={() => {}} />
           )}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => (
