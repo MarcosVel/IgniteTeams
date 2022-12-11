@@ -10,11 +10,12 @@ import { useRoute } from "@react-navigation/native";
 import { userAddByGroup } from "@storage/user/userAddByGroup";
 import { usersGetByGroupAndTeam } from "@storage/user/usersGetByGroupAndTeam";
 import { AppError } from "@utils/AppError";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
   Keyboard,
+  TextInput,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Container, Form, Gradient, HeaderList, TeamsQuantity } from "./styles";
@@ -31,6 +32,8 @@ export default function Users() {
   const route = useRoute();
   const { group } = route.params as RouteParams;
 
+  const inputUserNameRef = useRef<TextInput>(null);
+
   async function handleAddUser() {
     if (newUserName.trim().length === 0) {
       return Alert.alert(
@@ -46,6 +49,11 @@ export default function Users() {
 
     try {
       await userAddByGroup(newUser, group);
+
+      // remove focus
+      inputUserNameRef.current?.blur();
+
+      setNewUserName("");
       fetchUsersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
@@ -83,9 +91,11 @@ export default function Users() {
 
         <Form>
           <Input
+            inputRef={inputUserNameRef}
             placeholder="Nome da pessoa"
             autoCorrect={false}
             onChangeText={setNewUserName}
+            value={newUserName}
           />
           <ButtonIcon icon="add" onPress={handleAddUser} />
         </Form>
