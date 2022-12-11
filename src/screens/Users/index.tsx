@@ -8,14 +8,14 @@ import Input from "@components/Input";
 import UserCard from "@components/UserCard";
 import { useRoute } from "@react-navigation/native";
 import { userAddByGroup } from "@storage/user/userAddByGroup";
-import { usersGetByGroup } from "@storage/user/usersGetByGroup";
+import { usersGetByGroupAndTeam } from "@storage/user/usersGetByGroupAndTeam";
 import { AppError } from "@utils/AppError";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  TouchableWithoutFeedback,
+  Alert,
   FlatList,
   Keyboard,
-  Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Container, Form, Gradient, HeaderList, TeamsQuantity } from "./styles";
 
@@ -46,9 +46,7 @@ export default function Users() {
 
     try {
       await userAddByGroup(newUser, group);
-
-      const logUsers = await usersGetByGroup(group);
-      console.log(logUsers);
+      fetchUsersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert("Novo usuário", error.message);
@@ -58,6 +56,20 @@ export default function Users() {
       }
     }
   }
+
+  async function fetchUsersByTeam() {
+    try {
+      const usersByTeam = await usersGetByGroupAndTeam(group, team);
+      setUsers(usersByTeam);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Pessoas", "Não foi possível filtrar as pessoas do time.");
+    }
+  }
+
+  useEffect(() => {
+    fetchUsersByTeam();
+  }, [team]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -110,9 +122,9 @@ export default function Users() {
 
         <FlatList
           data={users}
-          keyExtractor={item => item}
+          keyExtractor={item => item.name}
           renderItem={({ item }) => (
-            <UserCard name={item} onRemove={() => {}} />
+            <UserCard name={item.name} onRemove={() => {}} />
           )}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => (
