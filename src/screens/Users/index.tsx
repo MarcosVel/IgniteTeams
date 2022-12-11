@@ -8,6 +8,7 @@ import Input from "@components/Input";
 import UserCard from "@components/UserCard";
 import { useRoute } from "@react-navigation/native";
 import { userAddByGroup } from "@storage/user/userAddByGroup";
+import { userRemoveByGroup } from "@storage/user/userRemoveByGroup";
 import { usersGetByGroupAndTeam } from "@storage/user/usersGetByGroupAndTeam";
 import { AppError } from "@utils/AppError";
 import React, { useEffect, useRef, useState } from "react";
@@ -75,6 +76,16 @@ export default function Users() {
     }
   }
 
+  async function handleUserRemove(userName: string) {
+    try {
+      await userRemoveByGroup(userName, group);
+      fetchUsersByTeam();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Remover pessoa", "Não foi possível remover.");
+    }
+  }
+
   useEffect(() => {
     fetchUsersByTeam();
   }, [team]);
@@ -136,7 +147,10 @@ export default function Users() {
           data={users}
           keyExtractor={item => item.name}
           renderItem={({ item }) => (
-            <UserCard name={item.name} onRemove={() => {}} />
+            <UserCard
+              name={item.name}
+              onRemove={() => handleUserRemove(item.name)}
+            />
           )}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => (
