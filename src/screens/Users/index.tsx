@@ -6,7 +6,8 @@ import Header from "@components/Header";
 import Highlight from "@components/Highlight";
 import Input from "@components/Input";
 import UserCard from "@components/UserCard";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { groupRemoveByName } from "@storage/group/groupRemoveByName";
 import { userAddByGroup } from "@storage/user/userAddByGroup";
 import { userRemoveByGroup } from "@storage/user/userRemoveByGroup";
 import { usersGetByGroupAndTeam } from "@storage/user/usersGetByGroupAndTeam";
@@ -31,6 +32,7 @@ export default function Users() {
   const [newUserName, setNewUserName] = useState("");
 
   const route = useRoute();
+  const navigation = useNavigation();
   const { group } = route.params as RouteParams;
 
   const inputUserNameRef = useRef<TextInput>(null);
@@ -84,6 +86,23 @@ export default function Users() {
       console.log(error);
       Alert.alert("Remover pessoa", "Não foi possível remover.");
     }
+  }
+
+  async function groupRemove() {
+    try {
+      await groupRemoveByName(group);
+      navigation.navigate("groups");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Remover grupo", "Deseja remover o grupo?");
+    }
+  }
+
+  async function handleGroupRemove() {
+    Alert.alert("Remover grupo", "Deseja remover o grupo?", [
+      { text: "Não", style: "cancel" },
+      { text: "Sim", onPress: () => groupRemove() },
+    ]);
   }
 
   useEffect(() => {
@@ -162,7 +181,11 @@ export default function Users() {
           ]}
         />
 
-        <Button title="Remover Turma" type="SECONDARY" />
+        <Button
+          title="Remover Turma"
+          type="SECONDARY"
+          onPress={handleGroupRemove}
+        />
       </Container>
     </TouchableWithoutFeedback>
   );
