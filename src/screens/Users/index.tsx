@@ -76,11 +76,11 @@ export default function Users() {
 
       const usersByTeam = await usersGetByGroupAndTeam(group, team);
       setUsers(usersByTeam);
-
-      setLoading(false);
     } catch (error) {
       console.log(error);
       Alert.alert("Pessoas", "Não foi possível filtrar as pessoas do time.");
+    } finally {
+      setLoading(false);
     }
   }
 
