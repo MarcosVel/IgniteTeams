@@ -3,6 +3,7 @@ import EmptyList from "@components/EmptyList";
 import GroupCard from "@components/GroupCard";
 import Header from "@components/Header";
 import Highlight from "@components/Highlight";
+import Loading from "@components/Loading";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { groupsGetAll } from "@storage/group/groupsGetAll";
 import React, { useCallback, useState } from "react";
@@ -11,6 +12,7 @@ import { Container } from "./styles";
 
 export default function Groups() {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState<string[]>([]);
 
   function handleNewGroup() {
@@ -19,10 +21,14 @@ export default function Groups() {
 
   async function fetchGroups() {
     try {
+      setLoading(true);
+
       const data = await groupsGetAll();
       setGroups(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -42,21 +48,25 @@ export default function Groups() {
 
       <Highlight title="Turmas" subtitle="Jogue com a sua turma" />
 
-      <FlatList
-        style={{ flex: 1 }}
-        data={groups}
-        keyExtractor={item => item}
-        renderItem={({ item }) => (
-          <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
-        )}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={
-          groups.length === 0 ? { flex: 1 } : { paddingBottom: 32 }
-        }
-        ListEmptyComponent={() => (
-          <EmptyList message="Nenhuma turma cadastrada" />
-        )}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          style={{ flex: 1 }}
+          data={groups}
+          keyExtractor={item => item}
+          renderItem={({ item }) => (
+            <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={
+            groups.length === 0 ? { flex: 1 } : { paddingBottom: 32 }
+          }
+          ListEmptyComponent={() => (
+            <EmptyList message="Nenhuma turma cadastrada" />
+          )}
+        />
+      )}
 
       <Button title="Criar nova turma" onPress={handleNewGroup} />
     </Container>

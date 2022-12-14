@@ -5,6 +5,7 @@ import Filter from "@components/Filter";
 import Header from "@components/Header";
 import Highlight from "@components/Highlight";
 import Input from "@components/Input";
+import Loading from "@components/Loading";
 import UserCard from "@components/UserCard";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { groupRemoveByName } from "@storage/group/groupRemoveByName";
@@ -27,8 +28,9 @@ type RouteParams = {
 };
 
 export default function Users() {
+  const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const [team, setTeam] = useState("Turma React Native");
+  const [team, setTeam] = useState("Time A");
   const [newUserName, setNewUserName] = useState("");
 
   const route = useRoute();
@@ -70,11 +72,15 @@ export default function Users() {
 
   async function fetchUsersByTeam() {
     try {
+      setLoading(true);
+
       const usersByTeam = await usersGetByGroupAndTeam(group, team);
       setUsers(usersByTeam);
     } catch (error) {
       console.log(error);
       Alert.alert("Pessoas", "Não foi possível filtrar as pessoas do time.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -134,13 +140,7 @@ export default function Users() {
 
         <HeaderList>
           <FlatList
-            data={[
-              "Turma React Native",
-              "Turma React",
-              "Time Angular",
-              "Time D",
-              "Time E",
-            ]}
+            data={["Time A", "Time B", "Time C", "Time D", "Time E"]}
             keyExtractor={item => item}
             renderItem={({ item }) => (
               <Filter
@@ -162,24 +162,28 @@ export default function Users() {
           </Gradient>
         </HeaderList>
 
-        <FlatList
-          data={users}
-          keyExtractor={item => item.name}
-          renderItem={({ item }) => (
-            <UserCard
-              name={item.name}
-              onRemove={() => handleUserRemove(item.name)}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={() => (
-            <EmptyList message="Não há pessoas nesse time." />
-          )}
-          contentContainerStyle={[
-            { paddingBottom: 32 },
-            users.length === 0 && { flex: 1 },
-          ]}
-        />
+        {loading ? (
+          <Loading />
+        ) : (
+          <FlatList
+            data={users}
+            keyExtractor={item => item.name}
+            renderItem={({ item }) => (
+              <UserCard
+                name={item.name}
+                onRemove={() => handleUserRemove(item.name)}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={() => (
+              <EmptyList message="Não há pessoas nesse time." />
+            )}
+            contentContainerStyle={[
+              { paddingBottom: 32 },
+              users.length === 0 && { flex: 1 },
+            ]}
+          />
+        )}
 
         <Button
           title="Remover Turma"
