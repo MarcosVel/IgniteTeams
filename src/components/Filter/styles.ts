@@ -13,7 +13,7 @@ export const Container = styled(TouchableOpacity)<FilterStyleProps>`
     `}
 
   border-radius: 4px;
-  margin-right: 12px;
+  margin-right: 8px;
   height: 38px;
   padding: 8px 12px;
   align-items: center;
